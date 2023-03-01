@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiz_app/pages/HomeScreen.dart';
+import 'package:quiz_app/providers/auth_provider.dart';
+import 'package:quiz_app/routes/routesName.dart';
 import 'package:quiz_app/util/state/questionState.dart';
 
 import 'QuizScreen.dart';
@@ -11,11 +13,13 @@ class ResultScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final int wrong = 10 - score;
     return Scaffold(
       appBar: AppBar(title: Text("Results")),
       body: Padding(
         padding: EdgeInsets.all(20),
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          Text("GAME OVER"),
           SizedBox(
             height: 30,
           ),
@@ -30,11 +34,12 @@ class ResultScreen extends ConsumerWidget {
           ),
           ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => QuizScreen(),
-                    ));
+                try {
+                  ref.read(authRepositoryProvider).updateData(wrong, score);
+                } on Exception catch (e) {
+                  print("error");
+                }
+                Navigator.pushNamed(context, quizPage);
                 ref.invalidate(questionProvider);
                 ref.invalidate(correctQuestionProivder);
                 ref
@@ -47,13 +52,14 @@ class ResultScreen extends ConsumerWidget {
           ),
           ElevatedButton(
               onPressed: () {
+                try {
+                  ref.read(authRepositoryProvider).updateData(wrong, score);
+                } on Exception catch (e) {
+                  print("error");
+                }
                 ref.read(questionProvider.notifier).resetQuiz();
                 ref.invalidate(correctQuestionProivder);
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HomeScreen(),
-                    ));
+                Navigator.pushNamed(context, homePage);
               },
               child: Text("Exit")),
         ]),

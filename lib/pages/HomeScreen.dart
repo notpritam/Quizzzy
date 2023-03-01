@@ -1,11 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiz_app/constants/category_list.dart';
-import 'package:quiz_app/pages/QuizScreen.dart';
-import 'package:quiz_app/providers/auth_provider.dart';
-import 'package:quiz_app/util/state/questionState.dart';
+import 'package:quiz_app/pages/ProfileScreen.dart';
+
+import 'package:quiz_app/routes/routesName.dart';
 
 final category = StateProvider((ref) => "");
 final level = StateProvider((ref) => "");
@@ -15,34 +16,82 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Quizzy"), actions: [
-        Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Icon(Icons.account_circle),
-        ),
-      ]),
-      body: Padding(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 10,
+    String? id = FirebaseAuth.instance.currentUser?.uid;
+    final db = FirebaseFirestore.instance;
+    final name = ref.watch(nameProvider);
+
+    final dataMap = <String, String>{};
+
+    final docRef = db.collection("users").doc(id);
+    docRef.get().then(
+      (DocumentSnapshot doc) {
+        final data = doc.data() as Map<String, dynamic>;
+
+        ref.read(nameProvider.notifier).state = data['name'];
+      },
+      onError: (e) => print("Error getting document: $e"),
+    );
+
+    Future<bool> _onWillPop() async {
+      return (await showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: new Text('Are you sure?'),
+              content: new Text('Do you want to close the App'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () =>
+                      Navigator.of(context).pop(false), //<-- SEE HERE
+                  child: new Text('No'),
+                ),
+                TextButton(
+                  onPressed: () => SystemNavigator.pop(), // <-- SEE HERE
+                  child: new Text('Yes'),
+                ),
+              ],
             ),
-            Text(
-              "Hey Pritam,\nWhat subject you want to learn today",
-              softWrap: true,
-            ),
-            Expanded(
-              child: GridView.count(
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                crossAxisCount: 2,
-                children: List.generate(10, (index) => SingleCategory(index)),
+          )) ??
+          false;
+    }
+
+    return WillPopScope(
+      onWillPop: () {
+        return _onWillPop();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+            title: Text("Quizzy"),
+            automaticallyImplyLeading: false,
+            actions: [
+              IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, profilePage);
+                },
+                icon: Icon(Icons.account_circle),
               ),
-            ),
-          ],
+            ]),
+        body: Padding(
+          padding: EdgeInsets.only(left: 20, right: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 10,
+              ),
+              Text(
+                "Hey ${name},\nWhat subject you want to learn today",
+                softWrap: true,
+              ),
+              Expanded(
+                child: GridView.count(
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  crossAxisCount: 2,
+                  children: List.generate(10, (index) => SingleCategory(index)),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -60,18 +109,14 @@ class SingleCategory extends ConsumerWidget {
       onTap: () => {
         ref.read(category.notifier).state = CategoryList[index]['id'] as String,
         ref.read(level.notifier).state = "easy",
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => QuizScreen(),
-            )),
-        ref
-            .read(questionProvider.notifier)
-            .getQuestionFinal(ref.read(category), ref.read(level)),
+        Navigator.pushNamed(
+          context,
+          levelPage,
+        ),
       },
       child: Container(
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20), color: Colors.amber),
+            borderRadius: BorderRadius.circular(20), color: Colors.grey[200]),
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Column(

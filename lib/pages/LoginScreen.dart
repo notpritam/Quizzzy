@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiz_app/constants/image_strings.dart';
-import 'package:quiz_app/pages/SignUpScreen.dart';
+
 import 'package:quiz_app/providers/auth_provider.dart';
-import 'package:quiz_app/repository/auth_repo.dart';
-import 'package:quiz_app/util/auth_checker.dart';
+
+import 'package:quiz_app/routes/routesName.dart';
 
 class LoginScreen extends ConsumerWidget {
   TextEditingController emailController = TextEditingController();
@@ -86,11 +85,7 @@ class LoginScreen extends ConsumerWidget {
                                           .signInWithEmailAndPassword(
                                               emailController.text.trim(),
                                               passwordController.text.trim());
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  AuthChecker()));
+                                      Navigator.pushNamed(context, checkAuth);
                                     } catch (e) {
                                       print("Error");
                                     }
@@ -99,12 +94,8 @@ class LoginScreen extends ConsumerWidget {
                                   label: Text("Next")),
                             ),
                             GestureDetector(
-                                onTap: () => {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (contex) =>
-                                                  SignUpScreen()))
-                                    },
+                                onTap: () =>
+                                    {Navigator.pushNamed(context, signUpPage)},
                                 child: Text("Sign Up")),
                           ]),
                     ),

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiz_app/constants/image_strings.dart';
-import 'package:quiz_app/pages/LoginScreen.dart';
+
 import 'package:quiz_app/providers/auth_provider.dart';
-import 'package:quiz_app/util/auth_checker.dart';
+import 'package:quiz_app/routes/routesName.dart';
 
 class SignUpScreen extends ConsumerWidget {
   final TextEditingController nameController = TextEditingController();
@@ -85,17 +83,16 @@ class SignUpScreen extends ConsumerWidget {
                             Center(
                               child: ElevatedButton.icon(
                                   onPressed: () {
-                                    ref.read(authRepositoryProvider).createUser(
-                                        emailController.text.trim(),
-                                        passwordController.text.trim());
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                AuthChecker()));
-                                    try {} catch (e) {
-                                      print("error");
-                                    }
+                                    final user = ref
+                                        .read(authRepositoryProvider)
+                                        .createUser(
+                                            emailController.text.trim(),
+                                            passwordController.text.trim(),
+                                            nameController.text);
+                                    user != null
+                                        ? Navigator.pushNamed(
+                                            context, checkAuth)
+                                        : {};
                                   },
                                   icon: Icon(Icons.abc),
                                   label: Text("Next")),
@@ -105,8 +102,7 @@ class SignUpScreen extends ConsumerWidget {
                             ),
                             GestureDetector(
                                 onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => LoginScreen()));
+                                  Navigator.pushNamed(context, loginPage);
                                 },
                                 child: Text("Sign In"))
                           ]),

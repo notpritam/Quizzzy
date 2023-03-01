@@ -1,0 +1,9 @@
+const String homePage = "/";
+const String loginPage = "/login";
+const String signUpPage = "/signup";
+const String profilePage = "/profile";
+const String splashPage = "/splash";
+const String levelPage = "/level";
+const String quizPage = "/quiz";
+const String resultPage = "/result";
+const String checkAuth = "/auth";

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthRepository {
@@ -24,10 +25,48 @@ class AuthRepository {
     }
   }
 
-  Future<User?> createUser(String email, String password) async {
+  updateData(int wrong, int correct) async {
+    var collection = FirebaseFirestore.instance.collection('users');
     try {
-      final result = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+      var docSnapshot = await collection.doc(_auth.currentUser?.uid).get();
+      Map<String, dynamic>? data = docSnapshot.data();
+      print(data);
+      int prevwrong = int.parse(data!['wrong']);
+      int prevcorrect = int.parse(data!['correctquestion']);
+      print(prevwrong);
+
+      print(prevcorrect);
+      final newData = <String, dynamic>{
+        "correctquestion": "${correct + prevcorrect}",
+        "wrong": "${wrong + prevwrong}",
+      };
+      try {
+        await collection
+            .doc(_auth
+                .currentUser?.uid) // <-- Doc ID where data should be updated.
+            .update(newData);
+        print(newData);
+      } on Exception catch (e) {
+        print("failerd");
+      }
+    } on Exception catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<User?> createUser(String email, String password, String name) async {
+    try {
+      final result = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((value) async {
+        final data = <String, String>{
+          "name": name,
+          "correctquestion": "0",
+          "wrong": "0",
+          "totalquestion": "0"
+        };
+      });
+
       return result.user;
     } on FirebaseAuthException catch (e) {
       throw AuthExecption(e.code);

@@ -1,23 +1,16 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:quiz_app/constants/image_strings.dart';
-import 'package:quiz_app/main.dart';
-import 'package:quiz_app/pages/LoginScreen.dart';
-import 'package:quiz_app/util/auth_checker.dart';
+import 'package:quiz_app/routes/routesName.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    Timer(
-        Duration(seconds: 3),
-        () => Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (BuildContext context) => AuthChecker())));
+    Timer(Duration(seconds: 3),
+        () => Navigator.popAndPushNamed(context, checkAuth));
     return Stack(
       children: [
         SvgPicture.asset(
