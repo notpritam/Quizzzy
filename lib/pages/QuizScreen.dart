@@ -1,7 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -37,7 +34,6 @@ class QuizScreen extends ConsumerWidget {
       }
 
       void checkAnswer(int postion) {
-        // ignore: deprecated_member_use
         if (options[postion] == correctAnswer) {
           ref.read(correctQuestionProivder.notifier).state++;
           print("Correct Answer");
@@ -102,7 +98,7 @@ class QuizScreen extends ConsumerWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(20),
                       child: Column(children: [
-                        Text(questionData.questions[questionIndex].question),
+                        Text(questionTitle),
                       ]),
                     ),
                   ),

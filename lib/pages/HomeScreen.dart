@@ -64,6 +64,8 @@ class HomeScreen extends ConsumerWidget {
             automaticallyImplyLeading: false,
             actions: [
               IconButton(
+                  onPressed: () {}, icon: Icon(Icons.format_quote_rounded)),
+              IconButton(
                 onPressed: () {
                   Navigator.pushNamed(context, profilePage);
                 },

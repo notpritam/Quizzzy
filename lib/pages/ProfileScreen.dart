@@ -10,6 +10,9 @@ final nameProvider = StateProvider<String>((ref) => "");
 final wrongProvider = StateProvider<String>((ref) => "");
 final correctquestionProvider = StateProvider<String>((ref) => "");
 final totalquestionProvider = StateProvider<String>((ref) => "");
+final levelProvider = StateProvider(
+  (ref) => "Begginner",
+);
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -40,6 +43,14 @@ class ProfileScreen extends ConsumerWidget {
       onError: (e) => print("Error getting document: $e"),
     );
 
+    final level = ref.watch(levelProvider);
+    if (int.parse(correct) > 100 && int.parse(correct) < 200) {
+      ref.read(levelProvider.notifier).state = "Learner";
+    } else if (int.parse(correct) > 200 && int.parse(correct) < 500) {
+      ref.read(levelProvider.notifier).state = "Dedicated";
+    } else if (int.parse(correct) > 500) {
+      ref.read(levelProvider.notifier).state = "Expert";
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text("Profile"),
@@ -50,13 +61,13 @@ class ProfileScreen extends ConsumerWidget {
           CircleAvatar(
             radius: 40,
             backgroundColor: Colors.black,
-            child: Text("1"),
+            child: Text("${int.parse(totalQuestion) / 20}"),
           ),
           SizedBox(
             height: 10,
           ),
           Text(name),
-          Text("Begginner"),
+          Text(level),
           Container(
             decoration: BoxDecoration(
                 color: Colors.grey[200],

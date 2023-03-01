@@ -23,6 +23,7 @@ class AuthRepository {
         throw AuthExecption('Wrong Credentials');
       }
     }
+    return null;
   }
 
   updateData(int wrong, int correct) async {
@@ -37,15 +38,14 @@ class AuthRepository {
 
       print(prevcorrect);
       final newData = <String, dynamic>{
-        "correctquestion": "${correct + prevcorrect}",
-        "wrong": "${wrong + prevwrong}",
+        "correctquestion": {correct + prevcorrect}.toString(),
+        "wrong": {wrong + prevwrong}.toString(),
       };
       try {
         await collection
             .doc(_auth
                 .currentUser?.uid) // <-- Doc ID where data should be updated.
             .update(newData);
-        print(newData);
       } on Exception catch (e) {
         print("failerd");
       }
@@ -65,6 +65,12 @@ class AuthRepository {
           "wrong": "0",
           "totalquestion": "0"
         };
+        final db = FirebaseFirestore.instance;
+        db
+            .collection("users")
+            .doc(_auth.currentUser?.uid)
+            .set(data)
+            .onError((e, _) => print("Error writing document: $e"));
       });
 
       return result.user;
