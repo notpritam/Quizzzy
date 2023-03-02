@@ -3,7 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiz_app/routes/routesName.dart';
 
 import '../util/state/questionState.dart';
-import 'HomeScreen.dart';
+import './HomeScreen.dart';
 
 class LevelScreen extends ConsumerWidget {
   const LevelScreen({super.key});

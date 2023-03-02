@@ -82,17 +82,37 @@ class SignUpScreen extends ConsumerWidget {
                             ),
                             Center(
                               child: ElevatedButton.icon(
-                                  onPressed: () {
-                                    final user = ref
-                                        .read(authRepositoryProvider)
-                                        .createUser(
-                                            emailController.text.trim(),
-                                            passwordController.text.trim(),
-                                            nameController.text);
-                                    user != null
-                                        ? Navigator.pushNamed(
-                                            context, checkAuth)
-                                        : {};
+                                  onPressed: () async {
+                                    if (nameController.text.isNotEmpty &&
+                                        emailController.text.length > 8 &&
+                                        emailController.text.contains("@")) {
+                                      if (passwordController.text.length > 8) {
+                                        final String message = await ref
+                                            .read(authRepositoryProvider)
+                                            .createUser(
+                                                emailController.text.trim(),
+                                                passwordController.text.trim(),
+                                                nameController.text);
+
+                                        if (message ==
+                                            "User created successfully") {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                                  content: Text(message)));
+                                          Navigator.pushNamed(
+                                              context, checkAuth);
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                                  content: Text(message)));
+                                        }
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                                content: Text(
+                                                    "Choose a strong passoword")));
+                                      }
+                                    }
                                   },
                                   icon: Icon(Icons.abc),
                                   label: Text("Next")),

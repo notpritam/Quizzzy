@@ -8,22 +8,20 @@ class AuthRepository {
 
   Stream<User?> get authChanges => _auth.idTokenChanges();
 
-  Future<User?> signInWithEmailAndPassword(
-      String email, String password) async {
+  signInWithEmailAndPassword(String email, String password) async {
     try {
       final result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      print("working");
-      return result.user;
+      return "Login Successful";
     } on FirebaseAuthException catch (e) {
       print("notworking");
       if (e.code == 'user-not-found') {
-        throw AuthExecption('User not found');
+        return "User not found";
       } else if (e.code == 'wrong-password') {
-        throw AuthExecption('Wrong Credentials');
+        return "Wrong password";
       }
     }
-    return null;
+    return "Something Wrong";
   }
 
   updateData(int wrong, int correct) async {
@@ -38,23 +36,22 @@ class AuthRepository {
 
       print(prevcorrect);
       final newData = <String, dynamic>{
-        "correctquestion": {correct + prevcorrect}.toString(),
-        "wrong": {wrong + prevwrong}.toString(),
+        "correctquestion": "${correct + prevcorrect}",
+        "wrong": "${wrong + prevwrong}",
       };
       try {
-        await collection
-            .doc(_auth
-                .currentUser?.uid) // <-- Doc ID where data should be updated.
-            .update(newData);
-      } on Exception catch (e) {
-        print("failerd");
+        await collection.doc(_auth.currentUser?.uid).update(newData);
+
+        return "Updated Successfully";
+      } on FirebaseAuthException catch (e) {
+        return "Failed with error code: ${e.code}";
       }
-    } on Exception catch (e) {
-      print(e.toString());
+    } on FirebaseAuthException catch (e) {
+      return "Failed with error code: ${e.code}";
     }
   }
 
-  Future<User?> createUser(String email, String password, String name) async {
+  createUser(String email, String password, String name) async {
     try {
       final result = await _auth
           .createUserWithEmailAndPassword(email: email, password: password)
@@ -70,28 +67,18 @@ class AuthRepository {
             .collection("users")
             .doc(_auth.currentUser?.uid)
             .set(data)
-            .onError((e, _) => print("Error writing document: $e"));
+            .onError((e, _) {
+          return ("Adding Data Failed");
+        });
       });
 
-      return result.user;
+      return "User created successfully";
     } on FirebaseAuthException catch (e) {
-      throw AuthExecption(e.code);
+      return "Failed with error code: ${e.code}";
     }
   }
 
   Future<void> signOut() async {
     await _auth.signOut();
-  }
-}
-
-class AuthExecption implements Exception {
-  String error;
-
-  AuthExecption(this.error);
-
-  @override
-  String toString() {
-    print(error);
-    return error;
   }
 }

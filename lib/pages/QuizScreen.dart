@@ -89,54 +89,55 @@ class QuizScreen extends ConsumerWidget {
               )
             ],
           ),
-          body: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Expanded(
-              child: Column(children: [
-                Center(
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(children: [
-                        Text(questionTitle),
-                      ]),
+          body: Column(
+            children: [
+              Expanded(
+                child: Column(children: [
+                  Center(
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(children: [
+                          Text(questionTitle),
+                        ]),
+                      ),
                     ),
                   ),
-                ),
-                ElevatedButton(
-                    onPressed: () {
-                      checkAnswer(0);
-                    },
-                    child: Text(options[0])),
-                SizedBox(
-                  height: 4,
-                ),
-                ElevatedButton(
-                    onPressed: () {
-                      checkAnswer(1);
-                    },
-                    child: Text(options[1])),
-                SizedBox(
-                  height: 4,
-                ),
-                ElevatedButton(
-                    onPressed: () {
-                      checkAnswer(2);
-                    },
-                    child: Text(options[2])),
-                SizedBox(
-                  height: 4,
-                ),
-                ElevatedButton(
-                    onPressed: () {
-                      checkAnswer(3);
-                    },
-                    child: Text(options[3])),
-                SizedBox(
-                  height: 4,
-                ),
-              ]),
-            ),
+                  ElevatedButton(
+                      onPressed: () {
+                        checkAnswer(0);
+                      },
+                      child: Text(options[0])),
+                  SizedBox(
+                    height: 4,
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        checkAnswer(1);
+                      },
+                      child: Text(options[1])),
+                  SizedBox(
+                    height: 4,
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        checkAnswer(2);
+                      },
+                      child: Text(options[2])),
+                  SizedBox(
+                    height: 4,
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        checkAnswer(3);
+                      },
+                      child: Text(options[3])),
+                  SizedBox(
+                    height: 4,
+                  ),
+                ]),
+              ),
+            ],
           ),
         ),
       );

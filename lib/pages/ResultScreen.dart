@@ -52,11 +52,8 @@ class ResultScreen extends ConsumerWidget {
           ),
           ElevatedButton(
               onPressed: () {
-                try {
-                  ref.read(authRepositoryProvider).updateData(wrong, score);
-                } on Exception catch (e) {
-                  print("error");
-                }
+                ref.read(authRepositoryProvider).updateData(wrong, score);
+
                 ref.read(questionProvider.notifier).resetQuiz();
                 ref.invalidate(correctQuestionProivder);
                 Navigator.pushNamed(context, homePage);

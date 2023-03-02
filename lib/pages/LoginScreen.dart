@@ -78,16 +78,27 @@ class LoginScreen extends ConsumerWidget {
                             ),
                             Center(
                               child: ElevatedButton.icon(
-                                  onPressed: () {
-                                    try {
-                                      ref
+                                  onPressed: () async {
+                                    if (emailController.text.length > 8 &&
+                                        emailController.text.contains("@") &&
+                                        passwordController.text.length > 8) {
+                                      String message = await ref
                                           .read(authRepositoryProvider)
                                           .signInWithEmailAndPassword(
                                               emailController.text.trim(),
                                               passwordController.text.trim());
-                                      Navigator.pushNamed(context, checkAuth);
-                                    } catch (e) {
-                                      print("Error");
+                                      if (message == "Login Successful") {
+                                        Navigator.pushNamed(context, checkAuth);
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                                content: Text(message)));
+                                      }
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              content: const Text(
+                                                  "Enter a valid email & password")));
                                     }
                                   },
                                   icon: Icon(Icons.abc),
