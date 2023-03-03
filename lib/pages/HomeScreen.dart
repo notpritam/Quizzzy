@@ -1,10 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiz_app/constants/category_list.dart';
-import 'package:quiz_app/pages/ProfileScreen.dart';
 
 import 'package:quiz_app/routes/routesName.dart';
 
@@ -16,22 +15,6 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    String? id = FirebaseAuth.instance.currentUser?.uid;
-    final db = FirebaseFirestore.instance;
-    final name = ref.watch(nameProvider);
-
-    final dataMap = <String, String>{};
-
-    final docRef = db.collection("users").doc(id);
-    docRef.get().then(
-      (DocumentSnapshot doc) {
-        final data = doc.data() as Map<String, dynamic>;
-
-        ref.read(nameProvider.notifier).state = data['name'];
-      },
-      onError: (e) => print("Error getting document: $e"),
-    );
-
     Future<bool> _onWillPop() async {
       return (await showDialog(
             context: context,
@@ -59,7 +42,10 @@ class HomeScreen extends ConsumerWidget {
         return _onWillPop();
       },
       child: Scaffold(
+        extendBodyBehindAppBar: true,
         appBar: AppBar(
+            elevation: 0,
+            backgroundColor: Colors.transparent,
             title: Text("Quizzy"),
             automaticallyImplyLeading: false,
             actions: [
@@ -72,27 +58,35 @@ class HomeScreen extends ConsumerWidget {
                 icon: Icon(Icons.account_circle),
               ),
             ]),
-        body: Padding(
-          padding: EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 10,
+        body: Container(
+          padding: EdgeInsets.only(bottom: 20),
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                  colors: [
+                Color(0xFFFFCC70),
+                Color(0xFFF2709C),
+                Color(0xFFFF9472),
+              ])),
+          child: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.only(left: 20, right: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: GridView.count(
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      crossAxisCount: 2,
+                      children:
+                          List.generate(10, (index) => SingleCategory(index)),
+                    ),
+                  ),
+                ],
               ),
-              Text(
-                "Hey ${name},\nWhat subject you want to learn today",
-                softWrap: true,
-              ),
-              Expanded(
-                child: GridView.count(
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  crossAxisCount: 2,
-                  children: List.generate(10, (index) => SingleCategory(index)),
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),
@@ -116,24 +110,36 @@ class SingleCategory extends ConsumerWidget {
           levelPage,
         ),
       },
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20), color: Colors.grey[200]),
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.network(
-                CategoryList[index]['img'] as String,
-                height: 72,
-                width: 72,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(width: 1, color: Colors.white30),
+                gradient: const LinearGradient(
+                  colors: [Colors.white60, Colors.white10],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomCenter,
+                )),
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.network(
+                    CategoryList[index]['img'] as String,
+                    height: 72,
+                    width: 72,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(CategoryList[index]['name'] as String),
+                ],
               ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(CategoryList[index]['name'] as String),
-            ],
+            ),
           ),
         ),
       ),

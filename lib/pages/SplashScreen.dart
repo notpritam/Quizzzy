@@ -11,30 +11,29 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     Timer(Duration(seconds: 3),
         () => Navigator.popAndPushNamed(context, checkAuth));
-    return Stack(
-      children: [
-        SvgPicture.asset(
-          splashBgImage2,
-          alignment: Alignment.center,
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          fit: BoxFit.cover,
-        ),
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Center(
-              child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Quizzy",
-                style: Theme.of(context).textTheme.displayMedium,
-              ),
-              Text("Expand your knowledege"),
-            ],
-          )),
-        )
-      ],
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                colors: [
+              Color(0xFFFFCC70),
+              Color(0xFFC850C0),
+              Color(0xFF4158D0),
+            ])),
+        child: Center(
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Quizzy",
+              style: Theme.of(context).textTheme.displayMedium,
+            ),
+            Text("Expand your knowledege"),
+          ],
+        )),
+      ),
     );
   }
 }

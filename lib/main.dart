@@ -22,9 +22,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       onGenerateRoute: MyRotes.generateRoutes,
       debugShowCheckedModeBanner: false,
-      theme: MyTheme.lightTheme,
-      darkTheme: MyTheme.darkTheme,
-      themeMode: ThemeMode.system,
+      // theme: MyTheme.lightTheme,
+      // darkTheme: MyTheme.darkTheme,
+      // themeMode: ThemeMode.system,
       initialRoute: splashPage,
     );
   }

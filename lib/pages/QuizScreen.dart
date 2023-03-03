@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:quiz_app/routes/routesName.dart';
 
 import 'package:quiz_app/util/state/questionState.dart';
+import 'package:quiz_app/util/theme.dart';
 
 final questionIndexProivder = StateProvider.autoDispose((ref) => 0);
 final correctQuestionProivder = StateProvider.autoDispose((ref) => 0);
@@ -41,6 +43,7 @@ class QuizScreen extends ConsumerWidget {
 
         if (8 < questionIndex) {
           ref.invalidate(questionIndexProivder);
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
           Navigator.pushReplacementNamed(context, resultPage,
               arguments: ref.read(correctQuestionProivder));
         } else {
@@ -79,65 +82,153 @@ class QuizScreen extends ConsumerWidget {
           return _onWillPop();
         },
         child: Scaffold(
+          extendBodyBehindAppBar: true,
           appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
             automaticallyImplyLeading: false,
             title: Text("Quizzy"),
             actions: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Center(child: Text("Question ${questionIndex + 1}")),
+                child: Center(child: Text("Question ${questionIndex + 1}/10")),
               )
             ],
           ),
-          body: Column(
-            children: [
-              Expanded(
-                child: Column(children: [
-                  Center(
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(children: [
-                          Text(questionTitle),
-                        ]),
+          body: Container(
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    colors: [
+                  Color(0xFFFFCC70),
+                  Color(0xFFC850C0),
+                  Color(0xFF4158D0),
+                ])),
+            child: SafeArea(
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Column(children: [
+                      Center(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(minHeight: 200),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                        width: 2, color: Colors.white30),
+                                    gradient: const LinearGradient(
+                                      colors: [Colors.white60, Colors.white10],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomCenter,
+                                    )),
+                                padding: const EdgeInsets.all(20),
+                                child: Center(
+                                  child: Text(
+                                    questionTitle,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      ElevatedButton(
+                          style: quizButtonTheme,
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                            (options[0] == correctAnswer)
+                                ? ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                    content: Text("Correct Answer"),
+                                    backgroundColor: Colors.green,
+                                  ))
+                                : ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text(
+                                            "Wrong answer, Correct answer is $correctAnswer."),
+                                        backgroundColor: Colors.red));
+                            checkAnswer(0);
+                          },
+                          child: Text(options[0])),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      ElevatedButton(
+                          style: quizButtonTheme,
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                            (options[1] == correctAnswer)
+                                ? ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text("Correct Answer"),
+                                        backgroundColor: Colors.green))
+                                : ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text(
+                                            "Wrong answer, Correct answer is $correctAnswer."),
+                                        backgroundColor: Colors.red));
+                            checkAnswer(1);
+                          },
+                          child: Text(options[1])),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      ElevatedButton(
+                          style: quizButtonTheme,
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                            (options[2] == correctAnswer)
+                                ? ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text("Correct Answer"),
+                                        backgroundColor: Colors.green))
+                                : ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text(
+                                            "Wrong answer, Correct answer is $correctAnswer."),
+                                        backgroundColor: Colors.red));
+                            checkAnswer(2);
+                          },
+                          child: Text(options[2])),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      ElevatedButton(
+                          style: quizButtonTheme,
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                            (options[3] == correctAnswer)
+                                ? ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text("Correct Answer"),
+                                        backgroundColor: Colors.green))
+                                : ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text(
+                                            "Wrong answer, Correct answer is $correctAnswer."),
+                                        backgroundColor: Colors.red));
+                            checkAnswer(3);
+                          },
+                          child: Text(options[3])),
+                      SizedBox(
+                        height: 4,
+                      ),
+                    ]),
                   ),
-                  ElevatedButton(
-                      onPressed: () {
-                        checkAnswer(0);
-                      },
-                      child: Text(options[0])),
-                  SizedBox(
-                    height: 4,
-                  ),
-                  ElevatedButton(
-                      onPressed: () {
-                        checkAnswer(1);
-                      },
-                      child: Text(options[1])),
-                  SizedBox(
-                    height: 4,
-                  ),
-                  ElevatedButton(
-                      onPressed: () {
-                        checkAnswer(2);
-                      },
-                      child: Text(options[2])),
-                  SizedBox(
-                    height: 4,
-                  ),
-                  ElevatedButton(
-                      onPressed: () {
-                        checkAnswer(3);
-                      },
-                      child: Text(options[3])),
-                  SizedBox(
-                    height: 4,
-                  ),
-                ]),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       );

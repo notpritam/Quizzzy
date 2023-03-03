@@ -17,7 +17,7 @@ final List<Map<String, String>> CategoryList = [
   {
     "id": "general_knowledge",
     "name": "General Knowledge",
-    "img": "https://cdn-icons-png.flaticon.com/512/8132/8132468.png"
+    "img": "https://cdn-icons-png.flaticon.com/512/8132/8132598.png"
   },
   {
     "id": "geography",
@@ -27,7 +27,7 @@ final List<Map<String, String>> CategoryList = [
   {
     "id": "history",
     "name": "History",
-    "img": "https://cdn-icons-png.flaticon.com/512/6981/6981234.png"
+    "img": "https://cdn-icons-png.flaticon.com/512/1800/1800174.png"
   },
   {
     "id": "music",
@@ -42,11 +42,11 @@ final List<Map<String, String>> CategoryList = [
   {
     "id": "society_and_culture",
     "name": "Society & Culture",
-    "img": "https://cdn-icons-png.flaticon.com/512/6193/6193871.png"
+    "img": "https://cdn-icons-png.flaticon.com/512/3555/3555424.png"
   },
   {
     "id": "sport_and_leisure",
     "name": "Sport & Leisure",
-    "img": "https://cdn-icons-png.flaticon.com/512/3311/3311579.png"
+    "img": "https://cdn-icons-png.flaticon.com/512/4163/4163736.png"
   },
 ];
